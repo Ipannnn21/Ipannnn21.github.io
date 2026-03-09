@@ -1,1 +1,194 @@
-belum tersedia !
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ipannnn21 | GitHub Portfolio</title>
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background:#000;
+color:#fff;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+}
+
+.card{
+background:#0a0a0a;
+border:1px solid #1f1f1f;
+transition:all .3s;
+}
+
+.card:hover{
+border-color:#fff;
+transform:translateY(-3px);
+}
+
+</style>
+
+</head>
+
+<body class="min-h-screen">
+
+<div class="max-w-6xl mx-auto p-8">
+
+<header class="mb-16">
+
+<h1 class="text-4xl font-bold tracking-tight">
+Ipannnn21
+</h1>
+
+<p class="text-gray-400 mt-2">
+GitHub Portfolio
+</p>
+
+</header>
+
+<section class="mb-16">
+
+<h2 class="text-xl mb-6 border-b border-gray-800 pb-2">
+Profile
+</h2>
+
+<div id="profile" class="flex items-center gap-6">
+Loading profile...
+</div>
+
+</section>
+
+<section class="mb-16">
+
+<h2 class="text-xl mb-6 border-b border-gray-800 pb-2">
+Repositories
+</h2>
+
+<div id="repos" class="grid md:grid-cols-2 gap-6">
+Loading repositories...
+</div>
+
+</section>
+
+<section>
+
+<h2 class="text-xl mb-6 border-b border-gray-800 pb-2">
+Activity
+</h2>
+
+<div id="activity" class="space-y-4">
+Loading activity...
+</div>
+
+</section>
+
+</div>
+
+<script>
+
+const username="Ipannnn21"
+
+async function loadProfile(){
+
+const res=await fetch(`https://api.github.com/users/${username}`)
+const data=await res.json()
+
+document.getElementById("profile").innerHTML=`
+
+<img src="${data.avatar_url}" class="w-20 h-20 rounded-full border border-gray-700">
+
+<div>
+
+<div class="text-lg font-semibold">
+${data.name ?? data.login}
+</div>
+
+<div class="text-gray-400 text-sm">
+${data.bio ?? ""}
+</div>
+
+<div class="text-gray-500 text-sm mt-2">
+${data.followers} followers • ${data.public_repos} repos
+</div>
+
+</div>
+
+`
+
+}
+
+async function loadRepos(){
+
+const res=await fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
+const repos=await res.json()
+
+let html=""
+
+repos.forEach(repo=>{
+
+html+=`
+
+<a href="${repo.html_url}" target="_blank" class="card p-6 block">
+
+<div class="font-semibold text-lg">
+${repo.name}
+</div>
+
+<div class="text-gray-400 text-sm mt-2">
+${repo.description ?? "No description"}
+</div>
+
+<div class="text-gray-500 text-xs mt-4">
+⭐ ${repo.stargazers_count} • ${repo.language ?? "code"}
+</div>
+
+</a>
+
+`
+
+})
+
+document.getElementById("repos").innerHTML=html
+
+}
+
+async function loadActivity(){
+
+const res=await fetch(`https://api.github.com/users/${username}/events/public`)
+const events=await res.json()
+
+let html=""
+
+events.slice(0,10).forEach(event=>{
+
+html+=`
+
+<div class="card p-4 text-sm">
+
+<div class="text-gray-300">
+${event.type}
+</div>
+
+<div class="text-gray-500 text-xs">
+repo: ${event.repo.name}
+</div>
+
+</div>
+
+`
+
+})
+
+document.getElementById("activity").innerHTML=html
+
+}
+
+loadProfile()
+loadRepos()
+loadActivity()
+
+</script>
+
+</body>
+</html>
